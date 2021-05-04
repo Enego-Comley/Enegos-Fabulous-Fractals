@@ -20,9 +20,55 @@ namespace Pascal_s_triangle_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        public int height;
+        public int heightPower = 1;
+        public int factor = 2;
+
+
         public MainWindow()
         {
             InitializeComponent();
+            height = (int)MathF.Pow(factor, heightPower);
+            UpdateText();
+
+        }
+
+        public void UpdateText()
+        {
+            InfoText.Text = "Factor:" + factor.ToString() + " " + "Height:" + height.ToString();
+        }
+
+        public void IncreaseHeight(object sender, RoutedEventArgs e)
+        {
+            heightPower++;
+            height = (int)MathF.Pow(factor, heightPower);
+            UpdateText();
+        }
+
+        public void DecreaseHeight(object sender, RoutedEventArgs e)
+        {
+            if (heightPower > 0)
+            {
+                heightPower--;
+            height = (int)MathF.Pow(factor, heightPower);
+            UpdateText();
+            }
+            
+        }
+
+        public void IncreaseFactor(object sender, RoutedEventArgs e)
+        {
+            factor++;
+            height = factor;
+            UpdateText();
+        }
+
+        public void DecreaseFactor(object sender, RoutedEventArgs e)
+        {
+
+            factor--;
+            height = factor;
+            UpdateText();
         }
     }
 }
