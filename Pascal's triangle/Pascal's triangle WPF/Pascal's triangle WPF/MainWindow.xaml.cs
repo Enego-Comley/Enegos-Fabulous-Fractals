@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Drawing;
+using Microsoft.Win32;
 
 namespace Pascal_s_triangle_WPF
 {
@@ -23,8 +24,8 @@ namespace Pascal_s_triangle_WPF
     public partial class MainWindow : Window
     {
         public int height;
-        public int heightPower = 1;
-        public int factor = 2;
+        public int heightPower = 2;
+        public int factor = 64;
         public int border = 5;
         public int halfSquareSize = 1;
         public Bitmap triangleImage;
@@ -141,6 +142,16 @@ namespace Pascal_s_triangle_WPF
             height = factor * factor;
             heightPower = 2;
             DisplayNewTriangle();
+        }
+
+        public void SaveImage(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Png file (*.png)|*.png|Jpg file (*.jpg)|*.jpg";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                triangleImage.Save(saveFileDialog.FileName);
+            }
         }
     }
 }
