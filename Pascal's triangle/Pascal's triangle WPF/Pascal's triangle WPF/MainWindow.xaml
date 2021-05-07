@@ -36,7 +36,7 @@
         <Button x:Name="Up" Content="Increase Height" Grid.Column="6" Grid.Row="3"  Click="IncreaseHeight" />
         <TextBlock x:Name="InfoText" Text="Factor:1 Height:2" Grid.Column="4" Grid.Row="3" TextAlignment="Center"/>
         <Button x:Name="Save" Content="Save" Grid.Column="4" Grid.Row="5" Width="50" Click="SaveImage"/>
-
+        <CheckBox Grid.Column="4" Grid.Row="4" HorizontalAlignment="Center" Click="RevertColourCheckBox"/>
 
 
 
