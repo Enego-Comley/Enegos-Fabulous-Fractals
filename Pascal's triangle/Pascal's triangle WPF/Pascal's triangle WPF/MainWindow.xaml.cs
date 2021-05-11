@@ -28,7 +28,7 @@ namespace Pascal_s_triangle_WPF
     {
         public int height;
         public int heightPower = 2;
-        public int factor = 105;
+        public int factor = 2;
         public int border = 0;
         public int halfSquareSize = 1;
         public Bitmap triangleImage;
@@ -55,6 +55,7 @@ namespace Pascal_s_triangle_WPF
             {
                 halfSquareSize = 500 / height;
             }
+            
             CreateNewImage(height * 2 * halfSquareSize + 2 * border, height * 2 * halfSquareSize + 2 * border);
             //taskTest();
             //Task t = CalculateTriangleNumbersAsync();
@@ -293,6 +294,10 @@ namespace Pascal_s_triangle_WPF
 
         public void IncreaseHeight(object sender, RoutedEventArgs e)
         {
+            if ((height * factor) * 2 * halfSquareSize + 2 * border > 23000)
+            {
+                return;
+            }
             heightPower++;
             height = (int)MathF.Pow(factor, heightPower);
             DisplayNewTriangle();
@@ -311,6 +316,10 @@ namespace Pascal_s_triangle_WPF
 
         public void IncreaseFactor(object sender, RoutedEventArgs e)
         {
+            if ((factor + 1) * (factor + 1) * 2 * halfSquareSize + 2 * border > 23000)
+            {
+                return;
+            }
             factor++;
             height = factor * factor;
             heightPower = 2;
