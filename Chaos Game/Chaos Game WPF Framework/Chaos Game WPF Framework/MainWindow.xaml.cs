@@ -20,6 +20,12 @@ namespace Chaos_Game_WPF_Framework
     /// </summary>
     public partial class MainWindow : Window
     {
+        int width;
+        int height;
+        int numberOfPoints;
+        float factor;
+
+
         public MainWindow()
         {
             InitializeComponent();

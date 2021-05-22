@@ -28,7 +28,7 @@ namespace Pascal_s_triangle_WPF
     {
         public int height;
         public int heightPower = 2;
-        public int factor = 2;
+        public int factor = 64;
         public int border = 0;
         public int halfSquareSize = 1;
         public Bitmap triangleImage;
