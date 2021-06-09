@@ -86,14 +86,14 @@
             <TextBox Grid.Column="1" Grid.Row="2" Margin="3" Text="#FF000000" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="mainColorText"></TextBox>
             <TextBox Grid.Column="1" Grid.Row="3" Margin="3" Text="#00000000" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="backgroundColorText"></TextBox>
             <TextBox Grid.Column="1" Grid.Row="4" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="startPointXText">0</TextBox>
-            <CheckBox Grid.Column="1" Grid.Row="5" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center"></CheckBox>
-            <CheckBox Grid.Column="1" Grid.Row="6" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center"></CheckBox>
-            <CheckBox Grid.Column="1" Grid.Row="7" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center"></CheckBox>
+            <CheckBox Grid.Column="1" Grid.Row="5" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center" Name="checkBoxNotLastNode"></CheckBox>
+            <CheckBox Grid.Column="1" Grid.Row="6" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center" Name="checkBoxNotLastTwoNodes"></CheckBox>
+            <CheckBox Grid.Column="1" Grid.Row="7" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center" Name="checkBoxBaseOffImage"></CheckBox>
 
-            <TextBox Grid.Column="2" Grid.Row="4" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch">0</TextBox>
-            <TextBox Grid.Column="2" Grid.Row="5" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch"></TextBox>
-            <TextBox Grid.Column="2" Grid.Row="6" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch"></TextBox>
-            <TextBlock Grid.Column="2" Grid.Row="7" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <TextBox Grid.Column="2" Grid.Row="4" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="startPointYText">0</TextBox>
+            <TextBox Grid.Column="2" Grid.Row="5" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="whichLastNodesText"></TextBox>
+            <TextBox Grid.Column="2" Grid.Row="6" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="whichLastTwoNodesText"></TextBox>
+            <TextBlock Grid.Column="2" Grid.Row="7" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Center" Name="imageConditionNameText"></TextBlock>
         </Grid>
         
         <Button Grid.Column="5" Grid.Row="5" Margin="10" Background="Gray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontStyle="Normal" FontSize="15">Generate Fractal</Button>

@@ -26,8 +26,8 @@ namespace Chaos_Game_WPF_Framework
         int height = 1080;
         int numberOfPoints = 20000;
         int[] startingPoint = { 0, 0 };
-        int[] whichLastNodes = {0};
-        int[] whichLastTwoNodes = { 0 };
+        List<int> whichLastNodes;
+        List<int> whichLastTwoNodes;
         float factor = 0.5f;
         Color backgroudColor;
         Color mainColor;
@@ -35,8 +35,16 @@ namespace Chaos_Game_WPF_Framework
         bool lastTwoNodesCondition;
         bool baseOnImage;
         string conditionImageLocation;
+        char[] hexLetters = {'A','B','C','D','E','F'};
 
-
+        public MainWindow()
+        {
+            InitializeComponent();
+            whichLastNodes = new List<int>();
+            whichLastTwoNodes = new List<int>();
+            whichLastTwoNodes.Add(0);
+            whichLastTwoNodes.Add(0);
+        }
 
         public void UpdateConditions()
         {
@@ -58,6 +66,64 @@ namespace Chaos_Game_WPF_Framework
             {
                 debugText += "Bad Number of points input. ";
             }
+
+            Color newBackgroundColor;
+            if(TryParseColor(backgroundColorText.Text,out newBackgroundColor))
+            {
+                backgroudColor = newBackgroundColor;
+            } else
+            {
+                debugText += "Bad background color. ";
+            }
+
+            Color newMainColor;
+            if (TryParseColor(mainColorText.Text, out newMainColor))
+            {
+                mainColor = newMainColor;
+            } else
+            {
+                debugText += "Bad main color. ";
+            }
+
+            int newStartPosX;
+            int newStartPosY;
+            if ((int.TryParse(startPointXText.Text,out newStartPosX))&&(int.TryParse(startPointYText.Text, out newStartPosY)))
+            {
+                startingPoint = new int[]{newStartPosX, newStartPosY };
+            } else
+            {
+                debugText += "Bad starting position. ";
+            }
+            if((bool)checkBoxNotLastNode.IsChecked)
+            {
+                
+            }
+
+        }
+        
+        bool CheckLastNodeCondition(string inputText, out List<int> newWhichLastNodes)
+        {
+            newWhichLastNodes = new List<int>();
+            int newNumber = 0;
+            foreach (string x in whichLastNodesText.Text.Split(','))
+            {
+                if (int.TryParse(x, out newNumber))
+                {
+                    newWhichLastNodes.Add(newNumber);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            if(newWhichLastNodes.Count > 0)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+            
         }
 
         bool TryParseColor(string hexCode, out Color color)
@@ -68,14 +134,112 @@ namespace Chaos_Game_WPF_Framework
             {
                 return false;
             }
-            int testHex = 0;
-            if (!int.TryParse(hexCode,out testHex ,System.Globalization.NumberStyles.HexNumber))
-            {
-
-            } 
-
-
             hexCode = hexCode.Substring(1);
+
+            int tempNum = 0;
+            int a = 0;
+            if (int.TryParse(hexCode[0].ToString(),out tempNum))
+            {
+                a += 16 * tempNum;
+            } else if(hexLetters.Contains(hexLetters[0]))
+            {
+                a += 16 * (11 + Array.IndexOf(hexLetters, hexCode[0]));   
+            } else
+            {
+                return false;
+            }
+            if (int.TryParse(hexCode[1].ToString(), out tempNum))
+            {
+                a +=  tempNum;
+            }
+            else if (hexLetters.Contains(hexLetters[1]))
+            {
+                a += (11 + Array.IndexOf(hexLetters, hexCode[1]));
+            }
+            else
+            {
+                return false;
+            }
+
+            int r = 0;
+            if (int.TryParse(hexCode[2].ToString(), out tempNum))
+            {
+                r += 16 * tempNum;
+            }
+            else if (hexLetters.Contains(hexLetters[2]))
+            {
+                r += 16 * (11 + Array.IndexOf(hexLetters, hexCode[2]));
+            }
+            else
+            {
+                return false;
+            }
+            if (int.TryParse(hexCode[3].ToString(), out tempNum))
+            {
+                r += tempNum;
+            }
+            else if (hexLetters.Contains(hexLetters[3]))
+            {
+                r += (11 + Array.IndexOf(hexLetters, hexCode[3]));
+            }
+            else
+            {
+                return false;
+            }
+
+            int g = 0;
+            if (int.TryParse(hexCode[4].ToString(), out tempNum))
+            {
+                g += 16 * tempNum;
+            }
+            else if (hexLetters.Contains(hexLetters[4]))
+            {
+                g += 16 * (11 + Array.IndexOf(hexLetters, hexCode[4]));
+            }
+            else
+            {
+                return false;
+            }
+            if (int.TryParse(hexCode[5].ToString(), out tempNum))
+            {
+                g += tempNum;
+            }
+            else if (hexLetters.Contains(hexLetters[5]))
+            {
+                g += (11 + Array.IndexOf(hexLetters, hexCode[5]));
+            }
+            else
+            {
+                return false;
+            }
+
+            int b = 0;
+            if (int.TryParse(hexCode[6].ToString(), out tempNum))
+            {
+                b += 16 * tempNum;
+            }
+            else if (hexLetters.Contains(hexLetters[6]))
+            {
+                b += 16 * (11 + Array.IndexOf(hexLetters, hexCode[6]));
+            }
+            else
+            {
+                return false;
+            }
+            if (int.TryParse(hexCode[7].ToString(), out tempNum))
+            {
+                b += tempNum;
+            }
+            else if (hexLetters.Contains(hexLetters[7]))
+            {
+                b += (11 + Array.IndexOf(hexLetters, hexCode[7]));
+            }
+            else
+            {
+                return false;
+            }
+
+            color = Color.FromArgb(a,r,g,b);
             return true;
         }
 
@@ -99,9 +263,6 @@ namespace Chaos_Game_WPF_Framework
             }
         }
 
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        
     }
 }
