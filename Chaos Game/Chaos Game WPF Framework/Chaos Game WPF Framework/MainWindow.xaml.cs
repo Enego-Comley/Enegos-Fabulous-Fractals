@@ -87,7 +87,7 @@ namespace Chaos_Game_WPF_Framework
 
             int newStartPosX;
             int newStartPosY;
-            if ((int.TryParse(startPointXText.Text,out newStartPosX))&&(int.TryParse(startPointYText.Text, out newStartPosY)))
+            if (int.TryParse(startPointXText.Text,out newStartPosX)&&int.TryParse(startPointYText.Text, out newStartPosY))
             {
                 startingPoint = new int[]{newStartPosX, newStartPosY };
             } else
@@ -96,27 +96,47 @@ namespace Chaos_Game_WPF_Framework
             }
             if((bool)checkBoxNotLastNode.IsChecked)
             {
-                
+                List<int> newWhichLastNodes;
+                if (TryParseIntList(whichLastTwoNodesText.Text, out newWhichLastNodes))
+                {
+                    whichLastTwoNodes = newWhichLastNodes;
+                } else
+                {
+                    debugText += "Bad which last node text. ";
+                }
             }
+            if ((bool)checkBoxNotLastTwoNodes.IsChecked)
+            {
+                List<int> newWhichTwoLastNodes;
+                if (TryParseIntList(whichLastTwoNodesText.Text, out newWhichTwoLastNodes))
+                {
+                    whichLastTwoNodes = newWhichTwoLastNodes;
+                }
+                else
+                {
+                    debugText += "Bad which last two nodes text. ";
+                }
+            }
+            baseOnImage = (bool)checkBoxBaseOffImage.IsChecked;
 
         }
         
-        bool CheckLastNodeCondition(string inputText, out List<int> newWhichLastNodes)
+        bool TryParseIntList(string inputText, out List<int> intList)
         {
-            newWhichLastNodes = new List<int>();
+            intList = new List<int>();
             int newNumber = 0;
             foreach (string x in whichLastNodesText.Text.Split(','))
             {
                 if (int.TryParse(x, out newNumber))
                 {
-                    newWhichLastNodes.Add(newNumber);
+                    intList.Add(newNumber);
                 }
                 else
                 {
                     return false;
                 }
             }
-            if(newWhichLastNodes.Count > 0)
+            if(intList.Count > 0)
             {
                 return true;
             } else
