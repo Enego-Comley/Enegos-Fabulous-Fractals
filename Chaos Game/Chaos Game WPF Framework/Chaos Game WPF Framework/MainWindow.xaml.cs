@@ -46,7 +46,7 @@ namespace Chaos_Game_WPF_Framework
             whichLastTwoNodes.Add(0);
         }
 
-        public void UpdateConditions()
+        public void UpdateConditions(object sender, RoutedEventArgs e)
         {
             string debugText = "";
             float newFactor;
@@ -118,7 +118,11 @@ namespace Chaos_Game_WPF_Framework
                 }
             }
             baseOnImage = (bool)checkBoxBaseOffImage.IsChecked;
-
+            if(debugText == "")
+            {
+                debugText = "Set config.";
+            }
+            DebugText.Text = debugText;
         }
         
         bool TryParseIntList(string inputText, out List<int> intList)
