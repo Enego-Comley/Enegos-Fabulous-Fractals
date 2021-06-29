@@ -16,14 +16,14 @@
             <ColumnDefinition Width="Auto"/>
 
             <ColumnDefinition Width="Auto"/>
-            
+
 
             <ColumnDefinition Width="20"/>
 
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
-            
+
             <RowDefinition Height="AUTO"/>
             <RowDefinition Height="20"/>
 
@@ -42,9 +42,9 @@
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
         <Image x:Name="TheImage" Grid.Row="1" Grid.Column="1" Grid.RowSpan="12" Grid.ColumnSpan="3" Height="auto" Width="auto" Source="C:\Users\enego\Downloads\ChaosImageSpikes.png"/>
-        
+
         <StackPanel Grid.Row="1" Grid.Column="4" Orientation="Horizontal">
-            <TextBlock Margin="2">Width: </TextBlock>
+            <TextBlock Margin="2">Width:</TextBlock>
             <TextBox Name="imageWidthText" Margin="2" Text="1080"/>
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="5" Orientation="Horizontal">
@@ -73,7 +73,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Column="0" Grid.Row="0" Margin="3" HorizontalAlignment="Right">Factor:</TextBlock>
-            <TextBlock Grid.Column="0" Grid.Row="1" Margin="3" HorizontalAlignment="Right">Number Of Points:</TextBlock>
+
             <TextBlock Grid.Column="0" Grid.Row="2" Margin="3" HorizontalAlignment="Right">Main Color</TextBlock>
             <TextBlock Grid.Column="0" Grid.Row="3" Margin="3" HorizontalAlignment="Right">Background Color</TextBlock>
             <TextBlock Grid.Column="0" Grid.Row="4" Margin="3" HorizontalAlignment="Right">StartingPoint</TextBlock>
@@ -82,7 +82,7 @@
             <TextBlock Grid.Column="0" Grid.Row="7" Margin="3" HorizontalAlignment="Right">Image</TextBlock>
 
             <TextBox Grid.Column="1" Grid.Row="0" Margin="3" Text="0.5" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="factorText"></TextBox>
-            <TextBox Grid.Column="1" Grid.Row="1" Margin="3" Text="5000" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="numberOfPointsText"></TextBox>
+
             <TextBox Grid.Column="1" Grid.Row="2" Margin="3" Text="#FF000000" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="mainColorText"></TextBox>
             <TextBox Grid.Column="1" Grid.Row="3" Margin="3" Text="#00000000" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="backgroundColorText"></TextBox>
             <TextBox Grid.Column="1" Grid.Row="4" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="startPointXText">0</TextBox>
@@ -91,14 +91,14 @@
             <CheckBox Grid.Column="1" Grid.Row="7" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center" Name="checkBoxBaseOffImage"></CheckBox>
 
             <TextBox Grid.Column="2" Grid.Row="4" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="startPointYText">0</TextBox>
-            <TextBox Grid.Column="2" Grid.Row="5" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="whichLastNodesText"></TextBox>
-            <TextBox Grid.Column="2" Grid.Row="6" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="whichLastTwoNodesText"></TextBox>
+            <TextBox Grid.Column="2" Grid.Row="5" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="whichLastNodesText">0</TextBox>
+            <TextBox Grid.Column="2" Grid.Row="6" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="whichLastTwoNodesText">0</TextBox>
             <TextBlock Grid.Column="2" Grid.Row="7" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Center" Name="imageConditionNameText"></TextBlock>
         </Grid>
-        
-        <Button Grid.Column="5" Grid.Row="5" Margin="10" Background="Gray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontStyle="Normal" FontSize="15">Generate Fractal</Button>
+
+        <Button Grid.Column="5" Grid.Row="5" Margin="10" Background="Gray" HorizontalAlignment="Stretch" Click="GenerateFractal" VerticalAlignment="Stretch" FontStyle="Normal" FontSize="15">Generate Fractal</Button>
         <TextBlock Grid.Column="5" Grid.Row="6" Margin="2" HorizontalAlignment="Center" Name="DebugText">Started Program</TextBlock>
-        <Button Grid.Column="5" Grid.Row="7" Margin="5" HorizontalAlignment="Center">Save</Button>
+        <Button Grid.Column="5" Grid.Row="7" Margin="5" HorizontalAlignment="Center" Click="SaveImage">Save</Button>
 
 
 
@@ -108,13 +108,12 @@
         <TextBox Grid.Column="6" Grid.Row="12" Margin="2" Name="PositionInputTextY"/>
 
         <TextBlock Grid.Column="1" Grid.Row="13" Name="PositionListText" Margin="2">Here is a list of positions</TextBlock>
-        <Button Grid.Column="2" Grid.Row="13" HorizontalAlignment="Left"  Margin="2">Remove Node</Button>
-        <Button Grid.Column="3" Grid.Row="13" HorizontalAlignment="Left"  Margin="2">Reset</Button>
-        
-        <Button Grid.Column="4" Grid.Row="13" Margin="2">Position</Button>
-        <Button Grid.Column="5" Grid.Row="13" Margin="2">Decimal</Button>
-        <Button Grid.Column="6" Grid.Row="13" Margin="2">Angle + length</Button>
-    
+        <Button Grid.Column="2" Grid.Row="13" HorizontalAlignment="Left"  Margin="2" Click="RemovePosition">Remove Node</Button>
+
+        <Button Grid.Column="4" Grid.Row="13" Margin="2" Click="AddPositionFromCord">Position</Button>
+        <Button Grid.Column="5" Grid.Row="13" Margin="2" Click="AddPositionFromDecimal">Decimal</Button>
+        <Button Grid.Column="6" Grid.Row="13" Margin="2" Click="AddPositionFromLengthAndAngle">Length + Angle</Button>
+
 
     </Grid>
 </Window>

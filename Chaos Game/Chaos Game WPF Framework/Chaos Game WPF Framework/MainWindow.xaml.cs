@@ -13,7 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Drawing;
+using System.Diagnostics;
+using System.Windows;
+
+
 using Color = System.Drawing.Color;
+using Microsoft.Win32;
 
 namespace Chaos_Game_WPF_Framework
 {
@@ -24,10 +29,10 @@ namespace Chaos_Game_WPF_Framework
     {
         int width = 1080;
         int height = 1080;
-        int numberOfPoints = 20000;
-        int[] startingPoint = { 0, 0 };
+        float[] startingPoint = { 0, 0 };
         List<int> whichLastNodes;
         List<int> whichLastTwoNodes;
+        List<int[]> jumpPositions;
         float factor = 0.5f;
         Color backgroudColor;
         Color mainColor;
@@ -36,14 +41,195 @@ namespace Chaos_Game_WPF_Framework
         bool baseOnImage;
         string conditionImageLocation;
         char[] hexLetters = {'A','B','C','D','E','F'};
+        Bitmap theFractal;
+
 
         public MainWindow()
         {
             InitializeComponent();
             whichLastNodes = new List<int>();
             whichLastTwoNodes = new List<int>();
-            whichLastTwoNodes.Add(0);
-            whichLastTwoNodes.Add(0);
+            jumpPositions = new List<int[]>();
+            //whichLastNodes.Add(0);
+            //whichLastTwoNodes.Add(0);
+            UpdateConditions(new object(),new RoutedEventArgs());
+            UpdatePositionText();
+        }
+
+        public void SaveImage(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Png file (*.png)|*.png|Jpg file (*.jpg)|*.jpg";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                theFractal.Save(saveFileDialog.FileName);
+            }
+        }
+        public void GenerateFractal(object sender, RoutedEventArgs e)
+        {
+            if(jumpPositions.Count == 0)
+            {
+                DebugText.Text = "No positions";
+                return;
+            }
+            CreateBitmap();
+            List<float[]> pixelsToIterate = new List<float[]>();
+            bool[,] pixelMap = new bool[width, height];
+            pixelsToIterate.Add(new float[] {startingPoint[0],startingPoint[1]});
+            while(pixelsToIterate.Count >0)
+            {
+                List<float[]> newPixelsToIterate = new List<float[]>();
+                foreach(float[] pixel in pixelsToIterate)
+                {
+                    for(int i = 0; i < jumpPositions.Count; i++)
+                    {
+                        int[] jumpPoint = jumpPositions[i]; float[] newPixel = new float[] { (pixel[0] + factor * (jumpPoint[0] - pixel[0])), (pixel[1] + factor * (jumpPoint[1] - pixel[1])) };
+                        int roundedX = (int)Math.Round(newPixel[0]);
+                        int roundedY = (int)Math.Round(newPixel[1]);
+                        if (!pixelMap[roundedX, roundedY])
+                        {
+                            newPixelsToIterate.Add(newPixel);
+                            theFractal.SetPixel(roundedX, roundedY, mainColor);
+                            pixelMap[roundedX, roundedY] = true;
+                        }
+                    }
+                }
+                pixelsToIterate = newPixelsToIterate;
+            }
+            DebugText.Text = "Generated Fractal";
+            string tempFileName = System.IO.Path.GetTempFileName();
+            theFractal.Save(tempFileName);
+            TheImage.Source = new BitmapImage(new Uri(tempFileName));
+        } 
+
+        void CreateBitmap()
+        {
+            theFractal = new Bitmap(width, height);
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    theFractal.SetPixel(i, j, backgroudColor);
+                }
+            }
+        }
+
+        public void AddPositionFromLengthAndAngle(object sender, RoutedEventArgs e)
+        {
+            float length;
+            float angle;
+            if (float.TryParse(PositionInputTextX.Text, out length) && float.TryParse(PositionInputTextY.Text, out angle))
+            {
+                int xPos = (int)(width * 0.5 + Math.Cos(angle * (Math.PI / 180.0f)) * length);
+                int yPos = (int)(height * 0.5 + Math.Sin(angle * (Math.PI / 180.0f)) * length);
+                if ((xPos >= 0) && (xPos < width))
+                {
+                    if ((yPos >= 0) && (yPos < height))
+                    {
+                        jumpPositions.Add(new int[] { (int)xPos, (int)yPos });
+                        UpdatePositionText();
+                        DebugText.Text = "Added new position";
+                    }
+                    else
+                    {
+                        DebugText.Text = "yPos out of range";
+                    }
+                }
+                else
+                {
+                    DebugText.Text = "xPos out of range";
+                }
+
+            }
+            else
+            {
+                DebugText.Text = "Bad position input";
+            }
+
+        }
+
+        public void AddPositionFromDecimal(object sender, RoutedEventArgs e)
+        {
+            float xPos;
+            float yPos;
+            if (float.TryParse(PositionInputTextX.Text, out xPos) && float.TryParse(PositionInputTextY.Text, out yPos))
+            {
+                xPos *= width;
+                yPos *= height;
+                if ((xPos >= 0) && (xPos < width))
+                {
+                    if ((yPos >= 0) && (yPos < height))
+                    {
+                        jumpPositions.Add(new int[] { (int)xPos, (int)yPos });
+                        UpdatePositionText();
+                        DebugText.Text = "Added new position";
+                    }
+                    else
+                    {
+                        DebugText.Text = "yPos out of range";
+                    }
+                }
+                else
+                {
+                    DebugText.Text = "xPos out of range";
+                }
+
+            }
+            else
+            {
+                DebugText.Text = "Bad position input";
+            }
+
+        }
+
+        public void RemovePosition(object sender, RoutedEventArgs e)
+        {
+            if(jumpPositions.Count > 0)
+            {
+                jumpPositions.RemoveAt(jumpPositions.Count - 1);
+                UpdatePositionText();
+                DebugText.Text = "Added Position";
+            }
+        }
+
+        public void AddPositionFromCord(object sender, RoutedEventArgs e)
+        {
+            int xPos;
+            int yPos;
+            if (int.TryParse(PositionInputTextX.Text, out xPos) && int.TryParse(PositionInputTextY.Text, out yPos))
+            {
+                if((xPos >=0)&&(xPos < width))
+                {
+                    if ((yPos >= 0) && (yPos < height))
+                    {
+                        jumpPositions.Add(new int[] { xPos, yPos });
+                        UpdatePositionText();
+                        DebugText.Text = "Added new position";
+                    }
+                    else
+                    {
+                        DebugText.Text = "yPos out of range";
+                    }
+                } else
+                {
+                    DebugText.Text = "xPos out of range";
+                }
+                
+            } else
+            {
+                DebugText.Text = "Bad position input";
+            }
+
+        }
+
+        void UpdatePositionText()
+        {
+            string newPositionsText = "Positions:";
+            foreach(int[] position in jumpPositions)
+            {
+                newPositionsText += " (" + position[0] + "," + position[1] + ")";
+            }
+            PositionListText.Text = newPositionsText;
         }
 
         public void UpdateConditions(object sender, RoutedEventArgs e)
@@ -52,20 +238,20 @@ namespace Chaos_Game_WPF_Framework
             float newFactor;
             if(float.TryParse(factorText.Text,out newFactor))
             {
-                factor = newFactor;
+                if((newFactor<1)&&(newFactor>0))
+                {
+                    factor = newFactor;
+
+                } else
+                {
+                    debugText += "Factor is not between 1 and 0 ";
+                }
             } else
             {
                 debugText += "Bad factor input. ";
             }
 
-            int newNumberOfPoints;
-            if(int.TryParse(numberOfPointsText.Text,out newNumberOfPoints))
-            {
-                numberOfPoints = newNumberOfPoints;
-            } else
-            {
-                debugText += "Bad Number of points input. ";
-            }
+            
 
             Color newBackgroundColor;
             if(TryParseColor(backgroundColorText.Text,out newBackgroundColor))
@@ -89,13 +275,24 @@ namespace Chaos_Game_WPF_Framework
             int newStartPosY;
             if (int.TryParse(startPointXText.Text,out newStartPosX)&&int.TryParse(startPointYText.Text, out newStartPosY))
             {
-                startingPoint = new int[]{newStartPosX, newStartPosY };
+                if((newStartPosX<0)||(newStartPosX>=width))
+                {
+                    debugText += "X start pos out of range ";
+                }
+                else if((newStartPosY < 0) || (newStartPosY >= height))
+                {
+                    debugText += "Y start pos out of range ";
+                } else
+                    startingPoint = new float[]{newStartPosX, newStartPosY };
             } else
             {
                 debugText += "Bad starting position. ";
             }
-            if((bool)checkBoxNotLastNode.IsChecked)
+
+            lastNodeCondition = (bool)checkBoxNotLastNode.IsChecked;
+            if ((bool)checkBoxNotLastNode.IsChecked)
             {
+                
                 List<int> newWhichLastNodes;
                 if (TryParseIntList(whichLastTwoNodesText.Text, out newWhichLastNodes))
                 {
@@ -105,8 +302,11 @@ namespace Chaos_Game_WPF_Framework
                     debugText += "Bad which last node text. ";
                 }
             }
+
+            lastTwoNodesCondition = (bool)checkBoxNotLastTwoNodes.IsChecked;
             if ((bool)checkBoxNotLastTwoNodes.IsChecked)
             {
+
                 List<int> newWhichTwoLastNodes;
                 if (TryParseIntList(whichLastTwoNodesText.Text, out newWhichTwoLastNodes))
                 {
@@ -160,108 +360,45 @@ namespace Chaos_Game_WPF_Framework
             }
             hexCode = hexCode.Substring(1);
 
-            int tempNum = 0;
             int a = 0;
-            if (int.TryParse(hexCode[0].ToString(),out tempNum))
+            int r = 0;
+            int g = 0;
+            int b = 0;
+
+            if (Int32.TryParse(hexCode.Substring(0,2),System.Globalization.NumberStyles.HexNumber, System.Threading.Thread.CurrentThread.CurrentCulture, out a))
             {
-                a += 16 * tempNum;
-            } else if(hexLetters.Contains(hexLetters[0]))
-            {
-                a += 16 * (11 + Array.IndexOf(hexLetters, hexCode[0]));   
+
             } else
             {
                 return false;
             }
-            if (int.TryParse(hexCode[1].ToString(), out tempNum))
+            if (Int32.TryParse(hexCode.Substring(2,2),System.Globalization.NumberStyles.HexNumber, System.Threading.Thread.CurrentThread.CurrentCulture, out r))
             {
-                a +=  tempNum;
-            }
-            else if (hexLetters.Contains(hexLetters[1]))
+
+            } else
             {
-                a += (11 + Array.IndexOf(hexLetters, hexCode[1]));
+                return false;
             }
-            else
+            if (Int32.TryParse(hexCode.Substring(4,2),System.Globalization.NumberStyles.HexNumber, System.Threading.Thread.CurrentThread.CurrentCulture, out g))
+            {
+
+            } else
+            {
+                return false;
+            }
+            if (Int32.TryParse(hexCode.Substring(6,2),System.Globalization.NumberStyles.HexNumber, System.Threading.Thread.CurrentThread.CurrentCulture, out b))
+            {
+
+            } else
             {
                 return false;
             }
 
-            int r = 0;
-            if (int.TryParse(hexCode[2].ToString(), out tempNum))
-            {
-                r += 16 * tempNum;
-            }
-            else if (hexLetters.Contains(hexLetters[2]))
-            {
-                r += 16 * (11 + Array.IndexOf(hexLetters, hexCode[2]));
-            }
-            else
-            {
-                return false;
-            }
-            if (int.TryParse(hexCode[3].ToString(), out tempNum))
-            {
-                r += tempNum;
-            }
-            else if (hexLetters.Contains(hexLetters[3]))
-            {
-                r += (11 + Array.IndexOf(hexLetters, hexCode[3]));
-            }
-            else
-            {
-                return false;
-            }
+            
 
-            int g = 0;
-            if (int.TryParse(hexCode[4].ToString(), out tempNum))
-            {
-                g += 16 * tempNum;
-            }
-            else if (hexLetters.Contains(hexLetters[4]))
-            {
-                g += 16 * (11 + Array.IndexOf(hexLetters, hexCode[4]));
-            }
-            else
-            {
-                return false;
-            }
-            if (int.TryParse(hexCode[5].ToString(), out tempNum))
-            {
-                g += tempNum;
-            }
-            else if (hexLetters.Contains(hexLetters[5]))
-            {
-                g += (11 + Array.IndexOf(hexLetters, hexCode[5]));
-            }
-            else
-            {
-                return false;
-            }
+            
 
-            int b = 0;
-            if (int.TryParse(hexCode[6].ToString(), out tempNum))
-            {
-                b += 16 * tempNum;
-            }
-            else if (hexLetters.Contains(hexLetters[6]))
-            {
-                b += 16 * (11 + Array.IndexOf(hexLetters, hexCode[6]));
-            }
-            else
-            {
-                return false;
-            }
-            if (int.TryParse(hexCode[7].ToString(), out tempNum))
-            {
-                b += tempNum;
-            }
-            else if (hexLetters.Contains(hexLetters[7]))
-            {
-                b += (11 + Array.IndexOf(hexLetters, hexCode[7]));
-            }
-            else
-            {
-                return false;
-            }
+            
 
             color = Color.FromArgb(a,r,g,b);
             return true;
