@@ -14,9 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Drawing;
 using System.Diagnostics;
-using System.Windows;
-
-
 using Color = System.Drawing.Color;
 using Microsoft.Win32;
 
@@ -27,8 +24,8 @@ namespace Chaos_Game_WPF_Framework
     /// </summary>
     public partial class MainWindow : Window
     {
-        int width = 1080;
-        int height = 1080;
+        int width = 1081;
+        int height = 1081;
         float[] startingPoint = { 0, 0 };
         List<int> whichLastNodes;
         List<int> whichLastTwoNodes;
@@ -39,9 +36,15 @@ namespace Chaos_Game_WPF_Framework
         bool lastNodeCondition;
         bool lastTwoNodesCondition;
         bool baseOnImage;
+        bool colorImage;
         string conditionImageLocation;
-        char[] hexLetters = {'A','B','C','D','E','F'};
         Bitmap theFractal;
+        Bitmap baseOffImage;
+        Color[] rainbowColors;
+        Color baseOffImageBackgroundColor;
+
+
+
 
 
         public MainWindow()
@@ -54,6 +57,7 @@ namespace Chaos_Game_WPF_Framework
             //whichLastTwoNodes.Add(0);
             UpdateConditions(new object(),new RoutedEventArgs());
             UpdatePositionText();
+            rainbowColors = new Color[]{Color.Red, Color.Orange, Color.Green, Color.CadetBlue, Color.Indigo, Color.Violet};
         }
 
         public void SaveImage(object sender, RoutedEventArgs e)
@@ -67,7 +71,11 @@ namespace Chaos_Game_WPF_Framework
         }
         public void GenerateFractal(object sender, RoutedEventArgs e)
         {
-            if(jumpPositions.Count == 0)
+            if(baseOnImage)
+            {
+                baseOffImageBackgroundColor = baseOffImage.GetPixel(0, 0);
+            }
+            if (jumpPositions.Count == 0)
             {
                 DebugText.Text = "No positions";
                 return;
@@ -75,22 +83,35 @@ namespace Chaos_Game_WPF_Framework
             CreateBitmap();
             List<float[]> pixelsToIterate = new List<float[]>();
             bool[,] pixelMap = new bool[width, height];
-            pixelsToIterate.Add(new float[] {startingPoint[0],startingPoint[1]});
-            while(pixelsToIterate.Count >0)
+            pixelsToIterate.Add(new float[] { startingPoint[0], startingPoint[1], -5, -10 });
+            while (pixelsToIterate.Count > 0)
             {
                 List<float[]> newPixelsToIterate = new List<float[]>();
-                foreach(float[] pixel in pixelsToIterate)
+                foreach (float[] pixel in pixelsToIterate)
                 {
-                    for(int i = 0; i < jumpPositions.Count; i++)
+                    for (int i = 0; i < jumpPositions.Count; i++)
                     {
-                        int[] jumpPoint = jumpPositions[i]; float[] newPixel = new float[] { (pixel[0] + factor * (jumpPoint[0] - pixel[0])), (pixel[1] + factor * (jumpPoint[1] - pixel[1])) };
+                        int[] jumpPoint = jumpPositions[i];
+                        float[] newPixel = new float[] { (pixel[0] + factor * (jumpPoint[0] - pixel[0])), (pixel[1] + factor * (jumpPoint[1] - pixel[1])), i, pixel[2] };
                         int roundedX = (int)Math.Round(newPixel[0]);
                         int roundedY = (int)Math.Round(newPixel[1]);
                         if (!pixelMap[roundedX, roundedY])
                         {
-                            newPixelsToIterate.Add(newPixel);
-                            theFractal.SetPixel(roundedX, roundedY, mainColor);
-                            pixelMap[roundedX, roundedY] = true;
+                            if(MeetsConditions(newPixel,pixel[3]))
+                            {
+                                newPixelsToIterate.Add(newPixel);
+                                if(colorImage)
+                                {
+                                    theFractal.SetPixel(roundedX, roundedY, rainbowColors[i%rainbowColors.Length]);
+
+                                }
+                                else
+                                {
+                                    theFractal.SetPixel(roundedX, roundedY, mainColor);
+
+                                }
+                                pixelMap[roundedX, roundedY] = true;
+                            }
                         }
                     }
                 }
@@ -100,7 +121,64 @@ namespace Chaos_Game_WPF_Framework
             string tempFileName = System.IO.Path.GetTempFileName();
             theFractal.Save(tempFileName);
             TheImage.Source = new BitmapImage(new Uri(tempFileName));
-        } 
+        }
+
+        bool MeetsConditions(float[] newPoint,float oldJumpPoint)
+        {
+            if(lastNodeCondition)
+            {
+                foreach(int whichLastNode in whichLastNodes)
+                {
+                    if(newPoint[2] == (newPoint[3] + whichLastNode)%jumpPositions.Count)
+                    {
+                        return false;
+                    }
+                }
+            }
+            if (lastTwoNodesCondition)
+            {
+                if (newPoint[3] == oldJumpPoint)
+                {
+                    foreach (int whichLastTwoNode in whichLastTwoNodes)
+                    {
+                        if (newPoint[2] == (newPoint[3] + whichLastTwoNode) % jumpPositions.Count)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                
+            }
+            if (baseOnImage)
+            {
+                if(baseOffImage.GetPixel((int)newPoint[0], (int)newPoint[1]) != baseOffImageBackgroundColor)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        void ChooseBaseOffImage(object sender, RoutedEventArgs e)
+        {
+            if((bool)checkBoxBaseOffImage.IsChecked)
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Png file (*.png)|*.png|Jpg file (*.jpg)|*.jpg";
+                if(openFileDialog.ShowDialog() == true)
+                {
+                    baseOffImage = new Bitmap(openFileDialog.FileName);
+                    baseOnImage = true;
+                } else
+                {
+                    checkBoxBaseOffImage.IsChecked = false;
+                    baseOnImage = false;
+                }
+            } else
+            {
+                baseOnImage = false;
+            }
+        }
 
         void CreateBitmap()
         {
@@ -154,8 +232,8 @@ namespace Chaos_Game_WPF_Framework
             float yPos;
             if (float.TryParse(PositionInputTextX.Text, out xPos) && float.TryParse(PositionInputTextY.Text, out yPos))
             {
-                xPos *= width;
-                yPos *= height;
+                xPos *= width - 1;
+                yPos *= height - 1;
                 if ((xPos >= 0) && (xPos < width))
                 {
                     if ((yPos >= 0) && (yPos < height))
@@ -234,6 +312,7 @@ namespace Chaos_Game_WPF_Framework
 
         public void UpdateConditions(object sender, RoutedEventArgs e)
         {
+            colorImage = (bool)ColorImageCheckbox.IsChecked;
             string debugText = "";
             float newFactor;
             if(float.TryParse(factorText.Text,out newFactor))
@@ -294,9 +373,9 @@ namespace Chaos_Game_WPF_Framework
             {
                 
                 List<int> newWhichLastNodes;
-                if (TryParseIntList(whichLastTwoNodesText.Text, out newWhichLastNodes))
+                if (TryParseIntList(whichLastNodesText.Text, out newWhichLastNodes))
                 {
-                    whichLastTwoNodes = newWhichLastNodes;
+                    whichLastNodes = newWhichLastNodes;
                 } else
                 {
                     debugText += "Bad which last node text. ";
@@ -317,7 +396,6 @@ namespace Chaos_Game_WPF_Framework
                     debugText += "Bad which last two nodes text. ";
                 }
             }
-            baseOnImage = (bool)checkBoxBaseOffImage.IsChecked;
             if(debugText == "")
             {
                 debugText = "Set config.";
@@ -328,7 +406,7 @@ namespace Chaos_Game_WPF_Framework
         bool TryParseIntList(string inputText, out List<int> intList)
         {
             intList = new List<int>();
-            int newNumber = 0;
+            int newNumber;
             foreach (string x in whichLastNodesText.Text.Split(','))
             {
                 if (int.TryParse(x, out newNumber))
@@ -413,17 +491,19 @@ namespace Chaos_Game_WPF_Framework
             int tempHeight;
             if(Int32.TryParse(widthAsString,out tempWidth) && Int32.TryParse(heightAsString, out tempHeight))
             {
-                width = tempWidth;
-                height = tempHeight;
-                DebugText.Text = "Updated image size. (" + width.ToString() + "," + height.ToString() + ")";
+                width = tempWidth + 1;
+                height = tempHeight + 1;
+                DebugText.Text = "Updated image size. (" + (width - 1).ToString() + "," + (height - 1).ToString() + ")";
             } else
             {
                 imageWidthText.Text = width.ToString();
                 imageHeightText.Text = height.ToString();
                 DebugText.Text = "Bad Size input";
             }
+            jumpPositions = new List<int[]>();
+            PositionListText.Text = "Positions:";
         }
 
-        
+
     }
 }
