@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MandelBrot_WPF"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
@@ -25,18 +26,81 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="5"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
+
+        <Image Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" Name="FractalImage"/>
+
+
         <Grid Grid.Row="1" Grid.Column="3">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+
             </Grid.RowDefinitions>
+            
+            
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Text="Overall Settings" FontSize="15"/>
+            
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Image pixel size:" Grid.ColumnSpan="2" />
+            <TextBox Grid.Row="2" Grid.Column="2" HorizontalAlignment="Stretch" Text="1080" Margin="4,0,4,0" Name="sizeInputX"/>
+            <TextBox Grid.Row="2" Grid.Column="4" HorizontalAlignment="Stretch" Text="1080" Margin="4,0,4,0" Name="sizeInputY"/>
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Corner 1:" Grid.ColumnSpan="2"  />
+            <TextBox Grid.Row="4" Grid.Column="2" HorizontalAlignment="Stretch" Text="-2" Margin="4,0,4,0" Name="corner1InputR"/>
+            <TextBox Grid.Row="4" Grid.Column="4" HorizontalAlignment="Stretch" Text="-1.5" Margin="4,0,4,0" Name="corner1InputI"/>
+
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Corner 2:" Grid.ColumnSpan="2" />
+            <TextBox Grid.Row="6" Grid.Column="2" HorizontalAlignment="Stretch" Text="1" Margin="4,0,4,0" Name="corner2InputR"/>
+            <TextBox Grid.Row="6" Grid.Column="4" HorizontalAlignment="Stretch" Text="1.5" Margin="4,0,4,0" Name="corner2InputI" Height="18" VerticalAlignment="Top"/>
+
+            <TextBlock Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="4" Text="Mandelbrot" FontSize="15" Margin="0,5,0,0" />
+
+            <TextBlock Grid.Row="12" Grid.Column="0" Text="Iterations" Grid.ColumnSpan="2" Grid.RowSpan="2" />
+            <TextBox Grid.Row="12" Grid.Column="2" HorizontalAlignment="Stretch" Text="256" Margin="4,0,4,0" Name="mandelbrotIterationsInput"/>
+
+            <Button Grid.Column="0" Grid.Row="16" Content="Generate Mandelbrot" Click="GenerateMandelbrotButton" />
         </Grid>
 
-        <TextBlock Text="Debug Text" Grid.Column="3" Grid.Row="7" VerticalAlignment="Center"/>
+        <TextBlock Text="Debug Text" Grid.Column="3" Grid.Row="7" VerticalAlignment="Center" Name="DebugText"/>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="9">
+            <xctk:ColorPicker Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" SelectedColor="Blue" SelectedColorChanged="ColorInput" Name="ColorInput0"/>
+            <xctk:ColorPicker Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" SelectedColor="Orange" SelectedColorChanged="ColorInput" Name="ColorInput1"/>
+            <xctk:ColorPicker Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" SelectedColor="Brown" SelectedColorChanged="ColorInput" Name="ColorInput2"/>
+            <xctk:ColorPicker Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" SelectedColor="Purple" SelectedColorChanged="ColorInput" Name="ColorInput3"/>
+            <xctk:ColorPicker Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" SelectedColor="Green" SelectedColorChanged="ColorInput" Name="ColorInput4"/>
+            <xctk:ColorPicker Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" SelectedColor="Gray" SelectedColorChanged="ColorInput" Name="ColorInput5"/>
+            <xctk:ColorPicker Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" SelectedColor="HotPink" SelectedColorChanged="ColorInput" Name="ColorInput6"/>
+            <xctk:ColorPicker Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" SelectedColor="LemonChiffon" SelectedColorChanged="ColorInput" Name="ColorInput7"/>
+            <xctk:ColorPicker Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" SelectedColor="Black" SelectedColorChanged="ColorInput" Name="ColorInput8"/>
+
+        </StackPanel>
+
     </Grid>
 </Window>
