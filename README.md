@@ -1,2 +1,2 @@
 # Enegos Fabulous Fractals
- My amazing fractals.
+ My best looking fractals.
